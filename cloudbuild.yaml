@@ -15,15 +15,7 @@ steps:
   - ${_IMAGE}
   waitFor: ['builder']
 
-- name: python
-  id: 'installer'
-  entrypoint: pip
-  args: 
-  - install
-  - -r
-  - requirements.txt
-  - --user
-  waitFor: ['pusher']
+
 
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   id: 'deployer'
@@ -49,7 +41,7 @@ steps:
   - 'DB_PASS=$$db_pass'
   - 'DB_NAME=rookie'
   secretEnv: ['db_pass', 'user']
-  waitFor: ['installer']
+
 
 availableSecrets:
   secretManager:
