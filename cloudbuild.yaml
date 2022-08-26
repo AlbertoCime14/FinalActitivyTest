@@ -1,0 +1,54 @@
+steps:
+
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'builder'
+  args: 
+  - 'build'
+  - '-t'
+  - '- ${_IMAGE}'
+  - '.'
+
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'pusher'
+  args: 
+  - 'push'
+  - '- ${_IMAGE}'
+  waitFor: ['builder']
+
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'deployer'
+  entrypoint: gcloud
+  args: 
+  - run
+  - deploy
+  - 'final-app'
+  - --image
+  - ${_IMAGE}
+  - --region
+  - europe-west1
+  - --platform
+  - managed
+  - --allow-unauthenticated
+  - --port
+  - '8080'
+  - --max-instances
+  - '2'
+  - --set-env-vars
+  - 'DB_USER=$$USER, DB_PASS=$$PASS, DB_NAME=rookie, CLOUD_SQL_CONNECTION_NAME=finalactivity-360517:us-central1:test-nuka-cola'
+  secretEnv: ['PASS', 'USER']
+
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/$PROJECT_ID/secrets/user/versions/latest
+    env: USER
+  - versionName: projects/$PROJECT_ID/secrets/db_pass/versions/latest
+    env: PASS
+
+
+substitutions:
+  _IMAGE: gcr.io/$PROJECT_ID/app:$COMMIT_SHA
+
+images:
+- ${_IMAGE}
