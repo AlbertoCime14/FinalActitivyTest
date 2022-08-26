@@ -14,12 +14,12 @@ def init_unix_connection_engine():
     cloud_sql_connection_name = os.environ["CLOUD_SQL_CONNECTION_NAME"]
     
     pool = sqlalchemy.create_engine(
-        sqlalchemy.engine.url.URL(
+        sqlalchemy.engine.url.URL.create(
             drivername="postgresql+pg8000",
             username=db_user, 
             password=db_pass, 
             database=db_name,
-            query={"unix_sock": "{}/{}/.s.PGSQL.5432".format(
+            query={"unix_sock": "{}/.s.PGSQL.5432".format(
                 db_socket_dir,
                 cloud_sql_connection_name)
             }
