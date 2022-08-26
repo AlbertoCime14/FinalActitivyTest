@@ -11,7 +11,7 @@ def init_unix_connection_engine():
     
     db_socket_dir = os.environ.get("DB_SOCKET_DIR", "/cloudsql")
     
-    cloud_sql_connection_name = 'finalactivity-360517:us-central1:test-nuka-cola'
+    cloud_sql_connection_name = os.environ["INSTANCE_CONNECTION_NAME"]
     
     pool = sqlalchemy.create_engine(
         sqlalchemy.engine.url.URL(
