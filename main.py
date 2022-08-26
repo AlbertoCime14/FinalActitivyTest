@@ -11,7 +11,7 @@ def init_unix_connection_engine(db_config):
     
     db_socket_dir = os.environ.get("DB_SOCKET_DIR", "/cloudsql")
     
-    cloud_sql_connection_name = os.environ["CLOUD_SQL_CONNECTION_NAME"]
+    cloud_sql_connection_name = os.environ["INSTANCE_CONNECTION_NAME"]
     
     pool = sqlalchemy.create_engine(
         sqlalchemy.engine.url.URL(
@@ -33,7 +33,7 @@ def init_unix_connection_engine(db_config):
 @app.route('/')
 def main():
 
-    db = init_unix_connection_engine(pool_size=5, max_overflow=2, pool_timeout=30, pool_recycle=1800)
+    db = init_unix_connection_engine(pool_size=20, max_overflow=2, pool_timeout=30, pool_recycle=1800)
 
     with db.connect() as conn:
         result = conn.execute().fetchall()
