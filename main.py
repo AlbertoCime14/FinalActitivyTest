@@ -4,7 +4,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-def init_unix_connection_engine(db_config):
+def init_unix_connection_engine():
     db_user = os.environ["DB_USER"]
     db_pass = os.environ["DB_PASS"]
     db_name = os.environ["DB_NAME"]
@@ -58,7 +58,7 @@ def init_unix_connection_engine(db_config):
 @app.route('/')
 def main():
 
-    db = init_unix_connection_engine(pool_size=20, max_overflow=2, pool_timeout=30, pool_recycle=1800)
+    db = init_unix_connection_engine()
 
     with db.connect() as conn:
         result = conn.execute().fetchall()
